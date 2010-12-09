@@ -252,6 +252,7 @@ package body Jabber is
    task type Listener_Type is
       entry Start;
       entry Stop;
+      -- entry Shut;
    end Listener_Type;
    
    task body Listener_Type is
@@ -262,6 +263,7 @@ package body Jabber is
       for i in 1 .. Config.Room_Count loop
          Net.Join_Groupchat (Sock, Config.Room (i));
       end loop;
+      Lib.Log.Write ("Listener Started");
       loop 
          declare 
             Raw : String := Net.Read (Sock);
@@ -277,11 +279,11 @@ package body Jabber is
             end if;
          exception
              when Net.Read_Error =>
-                Log.Write ("Raised Read_Error. Shutting down");
+                Log.Write ("Raised Read_Error. Disconnecting");
                 Net.Disconnect (Sock);
                 exit;
              when Stop_Listener =>
-                Log.Write ("Raised Stop_Listener. Shutting down");
+                Log.Write ("Raised Stop_Listener. Disconnecting");
                 Net.Disconnect (Sock);
                 exit;
              when The_Event: others =>
@@ -289,14 +291,33 @@ package body Jabber is
          end;
       end loop;
       accept Stop;
+   exception
+      when The_Event: others =>
+         Log.Write (Ada.Exceptions.Exception_Information (The_Event));
+         -- accept Shut;
+         accept Stop;
    end Listener_Type;   
 
    procedure Start is
       Listener : Listener_Type;
+      Listener_Error : exception;
    begin
       Listener.Start;
-      Lib.Log.Write ("Started");
       Listener.Stop;
+--      loop
+--         select
+--            Listener.Stop;
+--           exit;
+--         or
+--            delay 1.0;
+--            select
+--               Listener.Shut;
+--               raise Listener_Error with "Shutdown!";
+--            else
+--               null;
+--            end select;            
+--         end select;
+--      end loop;
    end Start;
    
 end jabber;

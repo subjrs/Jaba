@@ -36,8 +36,8 @@ begin
    
    Jabber.Start;
    
-   Lib.Log.Write ("Stopped. Waiting 10s before reconnect");
-   delay 10.0;
+   Lib.Log.Write ("Stopped. Waiting 60s before reconnect");
+   delay 60.0;
    
    end loop;
 

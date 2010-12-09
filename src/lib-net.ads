@@ -23,7 +23,7 @@ package Lib.Net is
 
    type Sock is record
       Socket  : GNAT.Sockets.Socket_Type;
-      Channel : GNAT.Sockets.Stream_Access;
+      -- Channel : GNAT.Sockets.Stream_Access;
    end record;
 
    procedure Connect (S : in out Sock);

@@ -20,6 +20,7 @@ with SHA.Strings;
 with SHA.Process_Data;
 with Ada.Characters.Handling;
 with Lib.XMPP;
+with Lib.Log;
 with Config;
 
 
@@ -43,8 +44,10 @@ package body Lib.Net is
       Address.Port := Port_Type (Port);
       Create_Socket (S.Socket);
       Set_Socket_Option (S.Socket, Socket_Level, (Keep_Alive, True));
+      Lib.Log.Write ("Connecting to " & Connection_Server & ":" & Port'Img (2 .. Port'Img'Length));
       Connect_Socket (S.Socket, Address);
-      S.Channel := Stream (S.Socket);
+      Lib.Log.Write ("Connected");
+      -- S.Channel := Stream (S.Socket);
       Write (S,   "<?xml version='1.0'?>"
                 & "<stream:stream xmlns:stream='http://etherx.jabber.org/streams' "
                 & "xmlns='jabber:client' to='" & Server & "' >");
@@ -69,9 +72,11 @@ package body Lib.Net is
                    & "<resource>Jaba</resource>"
                    & "</query></iq>");
          declare 
-            Ans : String := Ada.Characters.Handling.To_Lower (Get_Field (Read (S), "type"));
+            RS  : String := Read (S);
+            Ans : String := Ada.Characters.Handling.To_Lower (Get_Field (RS, "type"));
          begin
             if Ans = "error" then
+               Lib.Log.Write (RS);
                raise Error;
             end if;            
          end;
@@ -81,7 +86,7 @@ package body Lib.Net is
    procedure Disconnect (S : in out Sock) is
       use Gnat.Sockets;
    begin
-      Free (S.Channel);
+      -- Free (S.Channel);
       Shutdown_Socket ( S.Socket );
    end;
 
