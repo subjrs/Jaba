@@ -1,0 +1,15 @@
+﻿#Sample Config for Jabber Ada Bot
+
+Username          = user;
+Password          = password;
+Server            = jabber.ru;
+Connection_Server = allports.jabber.ru;
+Port              = 443;
+Nick              = nick;
+Version           = 1.0 (mailto: subjrs@gmail.com) - GNAT GPL 2010 (20100603) Ada 2005 Mode;
+OS_Ver            = Win7 Pro x86;
+Time_Zone         = 180;
+Room_Count        = 1;
+Room1             = ada-ru@conference.jabber.ru;
+Room2             = linuxforum@conference.jabber.ru;
+
