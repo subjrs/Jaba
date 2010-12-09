@@ -1,0 +1,7 @@
+http://www.cc.utah.edu/~nahaj/ada/sha/index.html
+
+You can freely use this under the GPL or BSD Open Source licenses
+
+Note that last time I checked (Aug 2005), this was one of only seven implementations (Out of 370) that passed the full tests for bit strings instead of just for bytes. It is also, to the best of my knowledge, the only NIST validated implementation availiable under any open source license.
+
+Note that this code works perfectly well on machines with different byte orders. (I've written several SHA-1 implimentations, but I've yet to write one that cares what the underlying byte order is.)
