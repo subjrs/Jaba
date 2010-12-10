@@ -26,6 +26,7 @@ with Ada.Characters.Handling;
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
 
+pragma Optimize( Time );
 package body Jabber is
 
 
@@ -158,6 +159,7 @@ package body Jabber is
                use Ada.Calendar;
                i : Positive := 1;
                delt : Duration;
+               label : Time := Clock;
             begin
                while i <= Querys'Last and then Querys (i).Q_ID /= MID loop
                   i := i + 1;
@@ -167,7 +169,7 @@ package body Jabber is
                end if;
                Querys (i).Q_ID := To_Unbounded_String (" ");
                if Querys (i).Q_Type = Ping then
-                  delt := Ada.Calendar.Clock - Querys (i).Q_Time;
+                  delt := label - Querys (i).Q_Time;
                   declare
                      QFrom : String := To_String (Querys (i).From);
                      QTo   : String := To_String (Querys (i).To);

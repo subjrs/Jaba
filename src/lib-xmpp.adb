@@ -16,6 +16,7 @@
 -- Place - Suite 330, Boston, MA 02111-1307, USA.                    --
 -----------------------------------------------------------------------
 
+pragma Optimize( Time );
 package body Lib.XMPP is
 
    function Get_Pos (Input, Element  : String) return Integer is
