@@ -91,11 +91,13 @@ package body Lib.Log is
             Hour    : Ada.Calendar.Formatting.Hour_Number    := Ada.Calendar.Formatting.Hour   (Data.Time, Ada.Calendar.Time_Zones.Time_Offset (Config.Time_Zone));
             Minute  : Ada.Calendar.Formatting.Minute_Number  := Ada.Calendar.Formatting.Minute (Data.Time, Ada.Calendar.Time_Zones.Time_Offset (Config.Time_Zone));
             Second  : Ada.Calendar.Formatting.Second_Number  := Ada.Calendar.Formatting.Second (Data.Time);
+            MonthS  : String := "0" & Month'Img (2 .. Month'Img'Length);
+            DayS    : String := "0" & Day'Img (2 .. Day'Img'Length);
             Conf    : String := ASU.To_String (Data.Conf);
             From    : String := ASU.To_String (Data.From);
             Message : String := ASU.To_String (Data.Message);
-            PathD   : String := "log" & Sep & Conf & Sep & Year'Img (2 .. Year'Img'Length) & Sep & Month'Img (2 .. Month'Img'Length);
-            PathF   : String := PathD & Sep & Day'Img (2 .. Day'Img'Length) & ".html";
+            PathD   : String := "log" & Sep & Conf & Sep & Year'Img (2 .. Year'Img'Length) & Sep & MonthS (MonthS'Length - 1 .. MonthS'Length);
+            PathF   : String := PathD & Sep & DayS (DayS'Length - 1 .. DayS'Length) & ".html";
 
             use Ada.Text_IO;
             FD : File_type;
