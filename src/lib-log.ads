@@ -19,5 +19,7 @@
 package Lib.Log is
 
    procedure Write (Message : String);
+   
+   procedure To_Log (Conf, From, Message : String);
 
 end Lib.Log;

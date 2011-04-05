@@ -30,7 +30,7 @@ project Jaba is
 
    package Compiler is
       for Default_Switches ("ada")
-         use ("-gnat05", "-O3", "-gnatn", "-gnatP", "-funroll-loops", "-funwind-tables", "-gnata");
+         use ("-s", "-gnat05", "-O2", "-gnatn", "-gnatP", "-funroll-loops", "-funwind-tables", "-gnata");
    end Compiler;
 
    package Binder is

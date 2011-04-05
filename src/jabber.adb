@@ -25,6 +25,7 @@ with Ada.Exceptions;
 with Ada.Characters.Handling;
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
+with Gnat.MD5;
 
 pragma Optimize( Time );
 package body Jabber is
@@ -36,6 +37,7 @@ package body Jabber is
    package Net  renames Lib.Net;
    package Log  renames Lib.Log;
    package ASU  renames Ada.Strings.Unbounded;   
+   package ACH renames Ada.Characters.Handling;
    
    Uptime : Ada.Calendar.Time := Ada.Calendar.Clock;
    
@@ -60,11 +62,31 @@ package body Jabber is
       MFrom2  : String := MFrom (XMPP.Get_Pos (MFrom, "/") + 1 .. MFrom'Length);
       MType   : String := XMPP.Get_Field (Message, "type");
       MID     : String := XMPP.Get_Field (Message, "id");
+      Clock_Label : Ada.Calendar.Time := Ada.Calendar.Clock;
+
+      function Cmd (MBody : String) return String is
+         pragma Warnings (Off);
+      begin
+         if MBody (1 .. 4) = "test" then 
+            return "passed";
+         elsif MBody (1 .. 6) = "uptime" then
+            return "My uptime is " & Duration'Image ( Ada.Calendar."-" (Clock_Label, Uptime) / Duration (24.0 * 3600.0)) & " days";
+         elsif MBody (1 .. 4) = "md5 " then
+            return ACH.To_Lower (Gnat.MD5.Digest (MBody (5 .. MBody'Length)));
+         else
+            return "";
+         end if;
+      exception
+         when others =>
+            return "";
+      end Cmd;
       
       procedure Groupchat (B : String) is
          MBody : String := B (B'First .. B'Last);
          pvto  : ASU.Unbounded_String;
       begin
+         Lib.Log.To_Log (MFrom1, MFrom2, MBody);
+
          if MBody = "date" or MBody = "date " then
             Net.Write (S, "<message type='groupchat' id='" & XMPP.Get_ID
                         & "' to='" & MFrom1
@@ -118,6 +140,18 @@ package body Jabber is
                Query_C := Query_C + 1;
             end if;
             return;         
+         else
+            declare Result : String := (Cmd (ACH.To_Lower (MBody)));
+            begin
+            if Result /= "" then
+                Net.Write (S, "<message type='groupchat' id='" & XMPP.Get_ID
+                            & "' to='" & MFrom1
+                            & "' ><body>" & MFrom2
+                            & ", " & Result
+                            & "</body>"
+                            & "</message>");
+            end if;
+            end; 
          end if;      
       end Groupchat;
       
@@ -159,7 +193,6 @@ package body Jabber is
                use Ada.Calendar;
                i : Positive := 1;
                delt : Duration;
-               label : Time := Clock;
             begin
                while i <= Querys'Last and then Querys (i).Q_ID /= MID loop
                   i := i + 1;
@@ -169,7 +202,7 @@ package body Jabber is
                end if;
                Querys (i).Q_ID := To_Unbounded_String (" ");
                if Querys (i).Q_Type = Ping then
-                  delt := label - Querys (i).Q_Time;
+                  delt := Clock_Label - Querys (i).Q_Time;
                   declare
                      QFrom : String := To_String (Querys (i).From);
                      QTo   : String := To_String (Querys (i).To);

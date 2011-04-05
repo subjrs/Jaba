@@ -16,6 +16,8 @@
 -- Place - Suite 330, Boston, MA 02111-1307, USA.                    --
 -----------------------------------------------------------------------
 
+with Gnat.Os_Lib;
+
 package Lib is
 
    procedure Sys (Command : String);
@@ -25,5 +27,7 @@ package Lib is
    
    function Get_Time return String;
    pragma Inline (Get_Time);
+
+   Sep : constant Character := Gnat.Os_Lib.Directory_Separator;
    
 end Lib;
