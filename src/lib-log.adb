@@ -130,7 +130,6 @@ package body Lib.Log is
          exception
              when The_Event: others =>
                 Write ("Flush Log Task: " & Ada.Exceptions.Exception_Information (The_Event));
-                Write ("Flush Log Task: I don't want to die!!!");
          end;
       end loop;
 
@@ -145,7 +144,7 @@ package body Lib.Log is
    procedure To_Log (Conf, From, Message : String) is
       Data : Buf_Rec;
    begin
-      if Conf = "" then return; end if;
+      if Conf = "" or Message = "" then return; end if;
       
       Data.Time    := Ada.Calendar.Clock;
       Data.Conf    := ASU.To_Unbounded_String (Conf);
