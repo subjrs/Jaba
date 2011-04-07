@@ -108,7 +108,7 @@ package body Lib.Log is
             if not Ada.Directories.Exists (PathF) then
                Create (FD, Out_File, PathF);
                Put_Line (FD, "<html><head><META HTTP-EQUIV=""Content-Type"" CONTENT=""text/html; charset=UTF8""><title>" 
-                           & PathF & "</title></head>");
+                           & Conf & " " & ymdhms & "</title></head>");
                Put_Line (FD, "<body>");
                Close (FD);
             end if;
