@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---   Copyright (C) 2011 by Gavrikov Valeriy                          --
+--   Copyright (C) 2010 by Gavrikov Valeriy                          --
 --   subjrs@gmail.com                                                --
 --                                                                   --
 -- This program is free software; you can redistribute it and/or     --
@@ -96,7 +96,7 @@ package body Lib.Log is
             Conf    : String := ASU.To_String (Data.Conf);
             From    : String := ASU.To_String (Data.From);
             Message : String := ASU.To_String (Data.Message);
-            PathD   : String := "log" & Sep & Conf & Sep & Year'Img (2 .. Year'Img'Length) & Sep & MonthS (MonthS'Length - 1 .. MonthS'Length);
+            PathD   : String := Config.Log_Path & Sep & Conf & Sep & Year'Img (2 .. Year'Img'Length) & Sep & MonthS (MonthS'Length - 1 .. MonthS'Length);
             PathF   : String := PathD & Sep & DayS (DayS'Length - 1 .. DayS'Length) & ".html";
 
             use Ada.Text_IO;
@@ -107,7 +107,8 @@ package body Lib.Log is
             end if;
             if not Ada.Directories.Exists (PathF) then
                Create (FD, Out_File, PathF);
-               Put_Line (FD, "<html><head><META HTTP-EQUIV=""Content-Type"" CONTENT=""text/html; charset=UTF8""><title>" & PathF & "</title></head>");
+               Put_Line (FD, "<html><head><META HTTP-EQUIV=""Content-Type"" CONTENT=""text/html; charset=UTF8""><title>" 
+                           & PathF & "</title></head>");
                Put_Line (FD, "<body>");
                Close (FD);
             end if;
@@ -126,7 +127,10 @@ package body Lib.Log is
                   exit when j > Message'Last;
                end loop;
                Open (FD, Append_File, PathF);
-               Put_Line (FD, "[" & ymdhms (Lib.XMPP.Get_Pos (ymdhms, " ") + 1 .. ymdhms'Length) & "] &lt;" & From & "&gt; " & ASU.To_String (Parsed) & "<br>");
+               Put_Line (FD, "<font color=""#0000A0"">[" 
+                           & ymdhms (Lib.XMPP.Get_Pos (ymdhms, " ") + 1 .. ymdhms'Length) 
+                           & "]</font> <font color=""#800080"">&lt;" 
+                           & From & "&gt;</font> " & ASU.To_String (Parsed) & "<br>");
                Close (FD);
             end;
          exception

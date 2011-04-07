@@ -80,6 +80,7 @@ package body Lib.Net is
                raise Error;
             end if;            
          end;
+         Write (S, "<presence xml:lang='en'><status>" & "I'm Jabber Ada Bot" & "</status></presence>");
       end;
    end Connect;
    
@@ -92,7 +93,7 @@ package body Lib.Net is
 
    procedure Join_Groupchat (S : Sock; Room : String) is
    begin
-      Write (S, "<presence to='" & Room & "/" & Config.Nick & "' ><priority>0</priority></presence>");
+      Write (S, "<presence to='" & Room & "/" & Config.Nick & "' ><status>Logs here: " & Config.URL_Log & Room & "/</status><priority>0</priority></presence>");
    end Join_Groupchat;
 
    function Sea_To_Str (Sea : Ada.Streams.Stream_Element_Array) return String is

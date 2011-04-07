@@ -21,6 +21,7 @@ with Lib.Log;
 with Lib.Net;
 with Lib.XMPP;
 with Config;
+--  with KPRF;
 with Ada.Exceptions;
 with Ada.Characters.Handling;
 with Ada.Strings.Unbounded;
@@ -67,12 +68,16 @@ package body Jabber is
       function Cmd (MBody : String) return String is
          pragma Warnings (Off);
       begin
-         if MBody (1 .. 4) = "test" then 
+         if MBody = "test" then 
             return "passed";
-         elsif MBody (1 .. 6) = "uptime" then
+         elsif MBody = "uptime" then
             return "My uptime is " & Duration'Image ( Ada.Calendar."-" (Clock_Label, Uptime) / Duration (24.0 * 3600.0)) & " days";
-         elsif MBody (1 .. 4) = "md5 " then
+         elsif MBody'Length > 4 and then MBody (1 .. 4) = "md5 " then
             return ACH.To_Lower (Gnat.MD5.Digest (MBody (5 .. MBody'Length)));
+         elsif MBody = "log" then
+            return "Logs here: " & Config.URL_Log & MFrom1 & "/";
+--         elsif MBody = "kprf" then
+--            return KPRF.Talk;
          else
             return "";
          end if;
@@ -161,7 +166,7 @@ package body Jabber is
             Net.Write (S, "<message type='chat' id='" & XMPP.Get_ID
                         & "' to='" & MFrom
                         & "'><body>"
-                        & "ping, version, date"
+                        & "ping, version, date, log, kprf"
                         & "</body>"
                         & "</message>");
          elsif MBody = "restart" then
@@ -266,15 +271,19 @@ package body Jabber is
       end IQ;
       
    begin
-      -- Log.Write (Message);
+      --  Log.Write (Message);
    
       if Message (1 .. 9) = "<message " then 
-         if MType = "groupchat" then
-            Groupchat (XMPP.Get_Body (Message, "body"));
-         elsif MType = "chat" then
-            Chat (XMPP.Get_Body (Message, "body"));
+         if XMPP.Get_Pos (Message, "</message>") > 0 then
+            if MType = "groupchat" then
+               Groupchat (XMPP.Get_Body (Message, "body"));
+            elsif MType = "chat" then
+               Chat (XMPP.Get_Body (Message, "body"));
+            else
+               null; -- Log.Write (Message);
+            end if;
          else
-            null; -- Log.Write (Message);
+            Parse_Message (S, Message & Net.Read (S));
          end if;
          return;
          

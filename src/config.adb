@@ -39,6 +39,8 @@ package body Config is
       Version           : Unbounded_String;
       OS_Ver            : Unbounded_String;
       Time_Zone		: Integer;
+      URL_Log           : Unbounded_String;
+      Log_Path          : Unbounded_String;
       Room_Count        : Positive;
       Room              : Room_Access;
    end record;
@@ -77,6 +79,8 @@ package body Config is
       Config_Var.Version           := To_Unbounded_String (Config.Hand.Get_Option (CT, "Version"));
       Config_Var.OS_Ver            := To_Unbounded_String (Config.Hand.Get_Option (CT, "OS_Ver"));
       Config_Var.Time_Zone	   := Integer'Value       (Config.Hand.Get_Option (CT, "Time_Zone"));
+      Config_Var.URL_Log           := To_Unbounded_String (Config.Hand.Get_Option (CT, "URL_Log"));
+      Config_Var.Log_Path          := To_Unbounded_String (Config.Hand.Get_Option (CT, "Log_Path"));
       Config_Var.Room_Count        := Positive'Value      (Config.Hand.Get_Option (CT, "Room_Count"));
       Config_Var.Room := new Room_Array (1 .. Config_Var.Room_Count);
       for i in Config_Var.Room.all'Range loop
@@ -157,14 +161,37 @@ package body Config is
       return To_String (Config_Var.OS_Ver);
    end OS_Ver;
 
-   ----------------
-   -- Room_Count --
-   ----------------
+   ---------------
+   -- Time_Zone --
+   ---------------
    
    function Time_Zone return Integer is
    begin
       return Config_Var.Time_Zone;
    end Time_Zone;
+
+   -------------
+   -- URL_Log --
+   -------------
+
+   function URL_Log return String is
+   begin
+      return To_String (Config_Var.URL_Log);
+   end URL_Log;
+
+   --------------
+   -- Log_Path --
+   --------------
+
+   function Log_Path return String is
+   begin
+      return To_String (Config_Var.Log_Path);
+   end Log_Path;
+
+
+   ----------------
+   -- Room_Count --
+   ----------------
 
    function Room_Count return Positive is
    begin

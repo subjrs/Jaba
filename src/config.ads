@@ -47,6 +47,13 @@ package Config is
    function Time_Zone                return Integer;
    pragma Inline (Time_Zone);
    
+   function URL_Log                  return String;
+   pragma Inline (URL_Log);
+
+   function Log_Path                 return String;
+   pragma Inline (Log_Path);
+
+
    function Room_Count               return Positive;
    pragma Inline (Room_Count);
    
